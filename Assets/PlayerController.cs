@@ -37,6 +37,20 @@ public class PlayerController : MonoBehaviour
     private Vector2 overlapBoxSize;
     private float correctDirection;
 
+    float width;
+    float height;
+    Vector3 position; 
+
+    void Awake()
+    {
+        width = (float)Screen.width / 2.0f;
+        height = (float)Screen.height / 2.0f;
+
+        // Position used for the cube.
+        position = new Vector3(0.0f, 0.0f, 0.0f);
+    }
+
+
     private void Start()
     {
         overlapBoxSize = new Vector2(groundWidth, 2 * groundHeight);
@@ -47,17 +61,15 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
-        if (!isUsingTouchInput)
-        {
-            GetInput();
-        }
-
-        
-
+        GetInput();
+        GetInput();
+        //TouchControls();
     }
 
     void FixedUpdate()
     {
+        
+        TouchControls();
         if (jumpCount != maxJump && ValidLayerCheck()) jumpCount = maxJump;
         AnimatePlayer();
         RotatePlayer();
@@ -170,5 +182,39 @@ public class PlayerController : MonoBehaviour
     {
         audioController.PlayAudio(0, true);   
     }
+
+
+    void TouchControls()
+    {
+        Debug.Log("Touch:" + Input.touchCount);
+
+        if (Input.touchCount > 0)
+        {
+            Touch touch = Input.GetTouch(0);
+
+
+            if (Input.touchCount == 2)
+            {
+                JumpPlayer((int)v);
+            }
+
+            Vector2 pos = touch.position;
+            position = new Vector3(-pos.x, pos.y, 0.0f);
+
+            // Position the cube.
+            if (pos.x < width / 2) {
+                h = -1;
+            }
+
+            if (pos.x > width / 2)
+            {
+                h = 1;
+            }
+            if (pos.y > 3 * height / 2) { v = 1;  }
+
+    
+        }
+    }
+
 
 }
